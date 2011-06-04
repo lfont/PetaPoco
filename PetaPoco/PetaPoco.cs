@@ -1068,6 +1068,14 @@ namespace PetaPoco
 			return Query<T>(sql.SQL, sql.Arguments);
 		}
 
+#if WITH_LINQ_PROVIDER
+        public IQueryable<T> Query<T>()
+        {
+            SqlQueryProvider provider = new SqlQueryProvider(this);
+            return new Query<T>(provider);
+        }
+#endif
+
 		public bool Exists<T>(object primaryKey) 
 		{
 			return FirstOrDefault<T>(string.Format("WHERE {0}=@0", EscapeSqlIdentifier(PocoData.ForType(typeof(T)).TableInfo.PrimaryKey)), primaryKey) != null;
